@@ -1,2 +1,2 @@
 # PTI
-Traitement des Images Compressive Sensing
+Traitement des Images - Compressive Sensing
