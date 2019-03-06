@@ -202,35 +202,26 @@ if (iterat_ksvd == True) :
 ############################################## Step 4 : Optimise les Images #######################################
 
 print("############################### OPTIMIZATION #####################################")
-from fractions import gcd
 
 # Importe l'image a optimiser
 OPT		= cv2.imread(images_path + opt_img)
 OPT		= cv2.cvtColor(OPT, cv2.COLOR_BGR2GRAY)
 OPT		= cv2.resize(OPT, (piy, pix))
 
-
-# print(np.shape(OPT))
-# # Selection des patches et vectorisation
-# a	= 
-# b	= 
-# c1	= gcd(a, 0)
-# c2	= 
-
-# OPT		= ptc.imageToSubImageVectorized(OPT, c1, c2)
-# print(np.shape(OPT))
-
-# print(np.shape(D))
+c1		= 16
+c2		= 16
+OPT2	= ptc.imageToSubImageVectorized(OPT, c1, c2)
+OPT2	= cv2.resize(OPT, (piy, pix))
 
 # Applique OMP
 alpha	= omp.OMPX(OPT, D, nl, nc)
 
-# Devectorisation de l'image obtenue
-#
-
-
 # Reconstruction 
 dot		= np.dot(D, alpha)
+
+# Devectorisation de l'image obtenue
+alpha2	= ptc.vectorToImage(dot, c1, c2)
+
 
 print("Erreur de reconstruction : %s" %(np.linalg.norm(X - dot)))
 

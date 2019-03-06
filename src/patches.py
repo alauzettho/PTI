@@ -133,3 +133,29 @@ def imageToSubImageVectorized(imgName, nRow, nCol):
 					subI.append(imgName[i + k * nbR][j + l * nbC])
 			res.append(subI)
 	return np.array(res)
+
+
+def vectorToImage(arr, nRow, nCol):
+	nbR, nbC = np.shape(arr)
+	lenC = len(arr[:,0])
+	sqrtL = int(np.sqrt(lenC))
+	res = []
+	for k in range(nbC):	
+		colon = arr[:,k]
+		subA = np.zeros((sqrtL, sqrtL))
+		for i in range(sqrtL):
+			for j in range(sqrtL):
+				subA[i][j] = colon[i*sqrtL+j]
+		res.append(subA)
+
+	imgRes = np.empty((nRow*sqrtL,nCol*sqrtL))
+	imgL = np.empty((sqrtL,nCol*sqrtL))
+	cpt = 0
+	for a in res:
+		if(cpt%nCol != 0):
+			np.concatenate((imgL,a), axis = 1)
+		else:
+			np.concatenate((imgRes,imgL), axis = 0)
+			imgL = np.empty((sqrtL,nCol*sqrtL))
+		cpt += 1
+	return imgRes
