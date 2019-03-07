@@ -221,7 +221,7 @@ dot		= np.dot(D, alpha)
 
 # Devectorisation de l'image obtenue
 alpha2	= ptc.vectorToImage(dot, c1, c2)
-
+alpha2	= cv2.GaussianBlur(alpha2, (3, 3), 0)
 
 print("Erreur de reconstruction : %s" %(np.linalg.norm(X - dot)))
 
@@ -231,4 +231,4 @@ cv2.imwrite(output_path + out_img, dot)
 # cv2.imwrite(output_path + "dic.png", D)
 # print(np.count_nonzero(alpha))
 
-print("################################## ALL DONE#######################################")
+print("################################## ALL DONE#######################################"),
