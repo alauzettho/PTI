@@ -2,11 +2,8 @@
 ###################################################################################################################
 #
 # Projet Traitement des Images
-# Alauzet Thomas
+# Alauzet Thomas, Mathieu Caissa, Alexis Guichemerre
 # Novembre 2018
-#
-#
-# OMP
 #
 ###################################################################################################################
 ###################################################################################################################
@@ -14,15 +11,6 @@
 
 import numpy as np
 from sklearn.linear_model import OrthogonalMatchingPursuit
-
-
-#retourne l'argument max d'une liste
-def argmax(L):
-	max = np.max(np.abs(L))
-	i = 0
-	while np.abs(L[i]) != max:
-		i = i + 1
-	return(i)
 
 
 # Transpose une liste
@@ -48,13 +36,12 @@ def orthogonalMatchingPursuit(x, D, nl, nc) :
 
 	while (n < nl and errnorm > 100) :
 		J = []
-		t = 2.5
 		for j in range(nombreAtomes) :
 			compute_value = np.dot(listAtomes[j], error) / np.linalg.norm(listAtomes[j])
 			J.append(compute_value)
 
-		J		= np.nan_to_num(J)
-		argm	= argmax(J)
+		J		= abs(np.nan_to_num(J))
+		argm	= np.argmax(J)
 		dm		= listAtomes[argm]
 		listM.append(argm)
 
@@ -75,24 +62,12 @@ def orthogonalMatchingPursuit(x, D, nl, nc) :
 
 # Retourne la representation parcimonieuse d'une matrice en iterant l'omp sur chaque colonnes
 def OMPX(X, D, nl, nc) :
+	alpha  = []
 	(a, b) = np.shape(X)
-	alpha = []
 
 	for i in range(b) :
 		(x, y, z) = orthogonalMatchingPursuit(X[:,i], D, nl, nc)						
 		alpha.append(transpose(y))
-		
+
 	alpha = np.concatenate(alpha, axis = 1)
-	return(alpha)
-
-
-# Retourne la representation parcimonieuse via la librairie scipy
-def OMPX2(X, D, nl, nc) :
-	if ((nl, nc) != np.shape(D)) :
-		print("ERROR DIM !!")
-		quit()
-
-	omp = OrthogonalMatchingPursuit(normalize = True)
-	omp.fit(D, X)
-	alpha = omp.coef_.T
 	return(alpha)

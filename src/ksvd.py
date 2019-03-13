@@ -2,11 +2,8 @@
 ###################################################################################################################
 #
 # Projet Traitement des Images
-# Alauzet Thomas
+# Alauzet Thomas, Mathieu Caissa, Alexis Guichemerre
 # Novembre 2018
-#
-#
-# KSVD
 #
 ###################################################################################################################
 ###################################################################################################################
@@ -20,7 +17,6 @@ def transpose(V) :
 	S = []
 	for i in V :
 		S.append([i])
-
 	return(np.array(S))
 
 
@@ -29,7 +25,6 @@ def erreurk(k, X, D, alpha, nl) :
 	Dk = D
 	for i in range(nl) :
 		Dk[i][k] = 0
-
 	return(X - np.dot(Dk, alpha))
 
 
@@ -39,7 +34,6 @@ def support(alpha) :
 	for i in range(len(alpha)) :
 		if (alpha[i] != 0):
 			L.append(i)
-
 	return(L)
 
 
@@ -49,16 +43,14 @@ def omega(alpha) :
 	K		= support(alpha)
 	b		= len(K)
 	omega	= np.zeros([l,b])
-
 	for i in range(b) :
 		omega[K[i]][i] = 1
-
 	return(omega)
 
 
-# Fait une iteration de la mise a jour du dictionnaire via la methode ksvd
+# Fait une mise a jour du dictionnaire via la methode svd
 # Alpha est une representation partimonieuse de X
-# L'algorithme retourne le dictionnaire D et le nouveau vecteur partimonieu alpha
+# Retourne le dictionnaire D et le nouveau vecteur partimonieu alpha
 def ksvd(X, D, alpha):
 	print("##################################################################################")
 	(nl, nc)   = np.shape(D)
@@ -72,13 +64,13 @@ def ksvd(X, D, alpha):
 		# Support vide:
 		if (np.shape(omegak)[1] < piy) :
 			D2.append(transpose(np.random.rand(nl)))
-			alpha2.append(transpose(X[0])) # np.random.randint(low = 0, high = pix)
+			alpha2.append(transpose(X[0]))
 
 		# Support non vide:
 		else :	
 			Ekr		  = np.dot(Ek, omegak)
 			(U, M, V) = np.linalg.svd(Ekr, full_matrices = False)
-			D2.append(transpose(U[:,0]))
+			D2.append(transpose(U[:, 0]))
 			alpha2.append(transpose(M[0] * V[0,:]))
 
 	alpha2	= np.concatenate(alpha2, axis = 1)

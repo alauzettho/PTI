@@ -1,4 +1,4 @@
-/doc/*
-/images/*
-/out/*
-/src/*.pyc
+doc/*
+images/*
+out/*
+src/*.pyc

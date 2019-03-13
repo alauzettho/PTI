@@ -2,33 +2,27 @@
 ###################################################################################################################
 #
 # Projet Traitement des Images
-# Caissa Mathieu, Guichemerre Alexis
-# Janvier 2018
-#
-#
-# Patches
+# Alauzet Thomas, Mathieu Caissa, Alexis Guichemerre
+# Novembre 2018
 #
 ###################################################################################################################
 ###################################################################################################################
 
 
-import numpy as np
 import random
 import operator
-from PIL.Image import *
+import numpy as np
 
 
 def distance(x, y) :
-	xa = np.array([x[0], x[1]])
-	ya = np.array([y[0], y[1]])
-	return(np.linalg.norm(xa - ya))
+	return(np.linalg.norm(np.array([x[0], x[1]]) - np.array([y[0], y[1]])))
 
 
 def patchCoord(centre, taille) :
-	x = centre[0]
-	y = centre[1]
-	res = []
-	moitT = taille // 2
+	x		= centre[0]
+	y		= centre[1]
+	res		= []
+	moitT	= taille // 2
 
 	for i in range(-moitT, moitT) :
 		for j in range (-moitT, moitT) :
@@ -70,33 +64,34 @@ def normalisationPatch(patch) :
 
 
 def patcheCenter(imgName, n, taille):
-	img = imgName
-	l,h = np.shape(imgName)
-	s = taille + taille
-	centers = []
-	patch = []
-	r0X = random.randint(taille, l - taille)
-	r0Y = random.randint(taille, h - taille)
-	centers.append((r0X,r0Y))
-	cpt = n - 1
-	for i in range(cpt):
-		testD = True
-		rxy = (random.randint(taille, l - taille), random.randint(taille, h - taille))
+	img		= imgName
+	l, h	= np.shape(imgName)
+	centers	= []
+	patch	= []
+	r0X		= random.randint(taille, l - taille)
+	r0Y		= random.randint(taille, h - taille)
+	cpt		= n - 1
+	centers.append((r0X, r0Y))
+
+	for i in range(cpt) :
+		testD	= True
+		rxy		= (random.randint(taille, l - taille), random.randint(taille, h - taille))
 		for j in centers:
-			dist=distance(j,rxy)
-			if dist<taille :
-				testD=False
-		if testD:
+			if distance(j, rxy) < taille :
+				testD = False
+		if testD :
 			centers.append(rxy)
-	for c in centers:
-		coord = patchCoord(c,taille)
-		xyMin = (c[0] - taille // 2, c[1] - taille // 2)
-		tabPixel = []
-		for coo in coord:
-			tabPixel.append( img[coo[0]][coo[1]] )
-		patch.append(( normalisationPatch(tabPixel),variancePatch(tabPixel), xyMin))
-		patch.sort(key=operator.itemgetter(1), reverse=True)
-	return patch
+
+	for c in centers :
+		coord		= patchCoord(c,taille)
+		xyMin		= (c[0] - taille // 2, c[1] - taille // 2)
+		tabPixel	= []
+		for coo in coord :
+			tabPixel.append(img[coo[0]][coo[1]])
+
+		patch.append((normalisationPatch(tabPixel),variancePatch(tabPixel), xyMin))
+		patch.sort(key = operator.itemgetter(1), reverse = True)
+	return(patch)
 
 
 def getPatches(liste) :
@@ -118,44 +113,3 @@ def start(img, nbP, taille):
 	A = getPatches(patcheCenter(img, nbP, taille))
 	B = [A[x].flatten() for x in range(len(A))]
 	return(np.array(B))
-
-
-def imageToSubImageVectorized(imgName, nRow, nCol):
-	lenImg	= np.shape(imgName)
-	res		= []
-	nbR		= int(lenImg[0] / nRow)
-	nbC		= int(lenImg[1] / nCol)
-	for k in range(nRow):
-		for l in range(nCol):
-			subI = []
-			for i in range(nbR):
-				for j in range(nbC):
-					subI.append(imgName[i + k * nbR][j + l * nbC])
-			res.append(subI)
-	return np.array(res)
-
-
-def vectorToImage(arr, nRow, nCol):
-	nbR, nbC = np.shape(arr)
-	lenC = len(arr[:,0])
-	sqrtL = int(np.sqrt(lenC))
-	res = []
-	for k in range(nbC):	
-		colon = arr[:,k]
-		subA = np.zeros((sqrtL, sqrtL))
-		for i in range(sqrtL):
-			for j in range(sqrtL):
-				subA[i][j] = colon[i*sqrtL+j]
-		res.append(subA)
-
-	imgRes = np.empty((nRow*sqrtL,nCol*sqrtL))
-	imgL = np.empty((sqrtL,nCol*sqrtL))
-	cpt = 0
-	for a in res:
-		if(cpt%nCol != 0):
-			np.concatenate((imgL,a), axis = 1)
-		else:
-			np.concatenate((imgRes,imgL), axis = 0)
-			imgL = np.empty((sqrtL,nCol*sqrtL))
-		cpt += 1
-	return imgRes
