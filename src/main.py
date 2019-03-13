@@ -37,9 +37,10 @@
 # Dependances : OpenCV, Numpy
 #
 #
-# Pour lancer le code :			python main.py
-# Pour faire du profiling :		python -m cProfile main.py > profile.txt
-# Pour specifier les param :	python main.py piy nc
+# Pour lancer le code :			python src/main.py
+#								depuis le dossier PTI
+# Pour faire du profiling :		python -m cProfile src/main.py > profile.txt
+# Pour specifier les param :	python src/main.py piy nc
 #								avec piy la taille de l'image et nc le nombre de colonnes du dictionnaire
 #
 #
@@ -66,7 +67,7 @@ import orthogonalMatchingPursuit as omp
 ################################################ Step 0 : Parametres ##############################################
 
 
-main_folder = os.getcwd() + "/../"				# Path principale
+main_folder = os.getcwd()						# Path principale
 images_path	= main_folder + "/images/"			# Path de nos images
 output_path = main_folder + "/out/"				# Chemin des fichiers de sorti
 dic_file	= output_path + "/dic.npy"			# Chemin vers notre dictionnaire en binaire
