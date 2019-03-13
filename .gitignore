@@ -1,4 +1,3 @@
-doc/*
 images/*
-out/*
 src/*.pyc
+out/*
